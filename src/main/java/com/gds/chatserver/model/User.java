@@ -13,6 +13,9 @@ public class User extends Auditable{
     @Setter
     private String phone;
 
+    @Setter
+    private String password = "1234";
+
     @Getter
     @Setter
     private String username;
@@ -20,6 +23,10 @@ public class User extends Auditable{
     @Getter
     @Setter
     private AccountStatus accountStatus;
+
+    public String getPassword(){
+        return "1234";
+    }
 
     public static User fromId(Long userId) {
         User user = new User();
@@ -29,9 +36,10 @@ public class User extends Auditable{
 
     public User(){}
 
-    public User(String phone, String username) {
+    public User(String phone, String username,String password) {
         this.phone = phone;
         this.username = username;
+        this.password = password;
     }
 
     public  User(Long id){

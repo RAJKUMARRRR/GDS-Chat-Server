@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ConversationRepository extends JpaRepository<Conversation,Long> {
-    /*public List<Conversation> getAllByUserOneOrUserTwo(User userOne,User userTwo);*/
+    public List<Conversation> getAllByUserOneOrUserTwo(User userOne,User userTwo);
 }

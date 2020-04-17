@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message,Long> {
-    /*public List<Message> findMessagesByConversation(Conversation conversation);*/
+    public List<Message> findMessagesByConversation(Conversation conversation);
 }
