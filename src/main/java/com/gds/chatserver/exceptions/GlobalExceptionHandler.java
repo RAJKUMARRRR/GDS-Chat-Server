@@ -1,5 +1,6 @@
 package com.gds.chatserver.exceptions;
 
+import com.twilio.exception.ApiException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ResponseStatusException.class})
     protected ResponseEntity<Object> handleResponseStatusException(ResponseStatusException ex) {
         ApiError error = new ApiError(HttpStatus.UNAUTHORIZED,ex.getMessage(),ex);
+        return buildResponseEntity(error);
+    }
+
+    @ExceptionHandler({ApiException.class})
+    protected ResponseEntity<Object> handleApiException(ApiException ex) {
+        ApiError error = new ApiError(HttpStatus.BAD_REQUEST,ex.getMessage(),ex);
         return buildResponseEntity(error);
     }
 

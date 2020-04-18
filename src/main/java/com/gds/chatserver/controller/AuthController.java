@@ -1,6 +1,9 @@
 package com.gds.chatserver.controller;
 
+import com.gds.chatserver.exceptions.UserDoesNotExistException;
+import com.gds.chatserver.model.User;
 import com.gds.chatserver.model.ValidateOtpRequest;
+import com.gds.chatserver.repository.UserRepository;
 import com.gds.chatserver.service.OtpService;
 import com.twilio.Twilio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +19,21 @@ import com.twilio.type.PhoneNumber;
 public class AuthController {
     @Autowired
     private OtpService otpService;
+    @Autowired
+    private UserRepository userRepository;
+
     public static final String ACCOUNT_SID = "AC65df86c1d8fbdcbe9bd40eaa2c1256db";
-    public static final String AUTH_TOKEN = "4e80df1a4c7cf1e37b1acf73d9bb8a7a";
+    public static final String AUTH_TOKEN = "d49c476b2ffd1ce425ed6c8689f21f0d";
     static {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
     }
     @GetMapping("/auth/sendOTP")
     @CrossOrigin
-    public ResponseEntity<Object> sendOtp(@RequestParam(name = "mobile") String mobileNumber){
+    public ResponseEntity<Object> sendOtp(@RequestParam(name = "mobile") String mobileNumber) throws UserDoesNotExistException {
+        User user = userRepository.findByPhone(mobileNumber);
+        if(user==null){
+            throw new UserDoesNotExistException("You are not registered.");
+        }
         Message message = Message
                 .creator(new PhoneNumber("+91"+mobileNumber), // to
                         new PhoneNumber("+15868001076"), // from

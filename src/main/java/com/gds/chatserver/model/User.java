@@ -1,6 +1,8 @@
 package com.gds.chatserver.model;
 
 import com.gds.chatserver.enums.AccountStatus;
+import com.gds.chatserver.enums.Role;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,13 +10,11 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "user")
+@Data
 public class User extends Auditable{
     @Getter
     @Setter
     private String phone;
-
-    @Setter
-    private String password = "1234";
 
     @Getter
     @Setter
@@ -22,11 +22,23 @@ public class User extends Auditable{
 
     @Getter
     @Setter
+    private String email;
+
+    @Getter
+    @Setter
     private AccountStatus accountStatus;
 
-    public String getPassword(){
-        return "1234";
-    }
+    @Getter
+    @Setter
+    private Role role;
+
+    @Getter
+    @Setter
+    private String profileImageUrl;
+
+    @Getter
+    @Setter
+    private Long mailBoxNumber;
 
     public static User fromId(Long userId) {
         User user = new User();
@@ -36,10 +48,9 @@ public class User extends Auditable{
 
     public User(){}
 
-    public User(String phone, String username,String password) {
+    public User(String phone, String username) {
         this.phone = phone;
         this.username = username;
-        this.password = password;
     }
 
     public  User(Long id){

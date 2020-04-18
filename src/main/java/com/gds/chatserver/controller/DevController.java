@@ -1,5 +1,8 @@
 package com.gds.chatserver.controller;
 
+import com.gds.chatserver.enums.AccountStatus;
+import com.gds.chatserver.enums.Role;
+import com.gds.chatserver.model.User;
 import com.gds.chatserver.repository.ConversationRepository;
 import com.gds.chatserver.repository.MessageRepository;
 import com.gds.chatserver.repository.UserRepository;
@@ -19,6 +22,15 @@ public class DevController {
     private ConversationRepository conversationRepository;
     @GetMapping("/populate")
     public String initDb(){
+        User user = new User();
+        user.setAccountStatus(AccountStatus.ACTIVE);
+        user.setEmail("crajkumar72@gmail.com");
+        user.setMailBoxNumber(1234l);
+        user.setPhone("8501096987");
+        user.setProfileImageUrl("");
+        user.setRole(Role.ADMIN);
+        user.setUsername("Rajkumar");
+        System.out.println(userRepository.save(user));
         /*mediaRepository.deleteAll();
         messageRepository.deleteAll();
         conversationRepository.deleteAll();

@@ -1,11 +1,18 @@
 package com.gds.chatserver.controller;
 
+import com.gds.chatserver.enums.MessageSource;
+import com.gds.chatserver.enums.MessageStatus;
+import com.gds.chatserver.enums.MessageType;
+import com.gds.chatserver.enums.Role;
 import com.gds.chatserver.exceptions.UserDoesNotExistException;
 import com.gds.chatserver.model.Conversation;
+import com.gds.chatserver.model.Message;
 import com.gds.chatserver.model.User;
 import com.gds.chatserver.repository.ConversationRepository;
+import com.gds.chatserver.repository.MessageRepository;
 import com.gds.chatserver.repository.UserRepository;
 import com.gds.chatserver.service.UserDetailsServiceImpl;
+import com.gds.chatserver.utils.ModelUtils;
 import org.hibernate.QueryParameterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -27,6 +34,9 @@ public class UserController {
     @Autowired
     private ConversationRepository conversationRepository;
 
+    @Autowired
+    private MessageRepository messageRepository;
+
     @CrossOrigin
     @GetMapping("/users/")
     public List<User> getUsers(){
@@ -40,10 +50,26 @@ public class UserController {
         return userRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("User doesn't exist with id:"+id));
     }
 
+    @GetMapping("/users/profile")
+    @CrossOrigin
+    public User getLoogedInUser(){
+        return userDetailsService.getLoggedInUser();
+    }
+
     @CrossOrigin
     @PostMapping("/users/")
     public User createUser(@RequestBody User user){
+        if(user.getRole() == Role.ADMIN && userDetailsService.getLoggedInUser().getRole() != Role.ADMIN){
+            throw new AccessDeniedException("You are not allowed to set role ADMIN");
+        }
         userRepository.save(user);
+        if(user.getRole() != Role.ADMIN){
+            Conversation conversation = new Conversation();
+            conversation.setUserOne(userRepository.findByRole(Role.ADMIN).getId());
+            conversation.setUserTwo(user.getId());
+            conversationRepository.save(conversation);
+            messageRepository.saveAll(ModelUtils.getGreetingMessages(conversation,user));
+        }
         return user;
     }
 

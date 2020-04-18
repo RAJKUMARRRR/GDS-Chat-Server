@@ -1,6 +1,7 @@
 package com.gds.chatserver.model;
 
 import com.fasterxml.jackson.annotation.*;
+import com.gds.chatserver.enums.MessageSource;
 import com.gds.chatserver.enums.MessageStatus;
 import com.gds.chatserver.enums.MessageType;
 import lombok.Getter;
@@ -61,6 +62,14 @@ public class Message extends Auditable{
         conversation = Conversation.fromId(conversationId);
     }
 
+    @Getter
+    @Setter
+    private MessageSource messageSource;
+
+    @Getter
+    @Setter
+    @OneToOne
+    private SystemMessage systemMessage;
 
     public Message(){}
 

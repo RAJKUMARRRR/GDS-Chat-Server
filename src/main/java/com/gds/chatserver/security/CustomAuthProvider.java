@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -27,7 +28,6 @@ public class CustomAuthProvider implements AuthenticationProvider {
     @Autowired
     private OtpService otpService;
 
-    @SneakyThrows
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
             String serverOtp = ""+otpService.getOtp(authentication.getPrincipal().toString());
@@ -36,7 +36,7 @@ public class CustomAuthProvider implements AuthenticationProvider {
                     UserDetails user = userDetailsService.loadUserByUsername(authentication.getPrincipal().toString());
                     return new UsernamePasswordAuthenticationToken( authentication.getPrincipal(),authentication.getCredentials(), this.authoritiesMapper.mapAuthorities(user.getAuthorities()));
                 }else{
-                    throw  new ResponseStatusException(HttpStatus.FORBIDDEN,"Invalid OTP", new InvalidOTPException("Invalid OTP."));
+                    throw  new BadCredentialsException("Invalid OTP");//new ResponseStatusException(HttpStatus.FORBIDDEN,"Invalid OTP", new InvalidOTPException("Invalid OTP."));
                 }
     }
 
