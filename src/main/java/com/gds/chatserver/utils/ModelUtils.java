@@ -26,6 +26,55 @@ public class ModelUtils {
     @Autowired
     private static ConversationRepository conversationRepository;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Autowired
     private static MessageRepository messageRepository;
 

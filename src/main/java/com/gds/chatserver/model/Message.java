@@ -50,7 +50,7 @@ public class Message extends Auditable{
 
     @Setter
     @Getter
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @JsonProperty("conversationId")
