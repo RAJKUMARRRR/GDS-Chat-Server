@@ -58,6 +58,6 @@ public class ConversationController {
         if(loggedInUser.getId() != conversation.getUserOne().getId() && loggedInUser.getId() != conversation.getUserTwo().getId()){
             throw new AccessDeniedException("You are not authorized to view this conversation");
         }
-        return messageRepository.findMessagesByConversation(conversationRepository.findById(conversationId).orElseThrow());
+        return messageRepository.findMessagesByConversation(conversationRepository.findById(conversationId).orElseThrow(()->new ConversationNotFoundException("Conversation does not exit with id:"+conversationId)));
     }
 }
