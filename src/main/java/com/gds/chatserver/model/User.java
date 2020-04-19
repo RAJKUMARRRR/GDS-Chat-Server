@@ -1,5 +1,6 @@
 package com.gds.chatserver.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gds.chatserver.enums.AccountStatus;
 import com.gds.chatserver.enums.Role;
 import lombok.Data;
@@ -7,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -39,6 +42,10 @@ public class User extends Auditable{
     @Getter
     @Setter
     private Long mailBoxNumber;
+
+    @Transient
+    @JsonInclude
+    private List<ConversationResponse> conversations;
 
     public static User fromId(Long userId) {
         User user = new User();

@@ -1,12 +1,9 @@
 package com.gds.chatserver.controller;
 
-import com.gds.chatserver.enums.MessageSource;
-import com.gds.chatserver.enums.MessageStatus;
-import com.gds.chatserver.enums.MessageType;
 import com.gds.chatserver.enums.Role;
 import com.gds.chatserver.exceptions.UserDoesNotExistException;
 import com.gds.chatserver.model.Conversation;
-import com.gds.chatserver.model.Message;
+import com.gds.chatserver.model.ConversationResponse;
 import com.gds.chatserver.model.User;
 import com.gds.chatserver.repository.ConversationRepository;
 import com.gds.chatserver.repository.MessageRepository;
@@ -19,6 +16,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,7 +51,23 @@ public class UserController {
     @GetMapping("/users/profile")
     @CrossOrigin
     public User getLoogedInUser(){
-        return userDetailsService.getLoggedInUser();
+        User user = userDetailsService.getLoggedInUser();
+        List<Conversation> list =  conversationRepository.getAllByUserOneOrUserTwo(user,user);
+        List<ConversationResponse> conversationResponses = new ArrayList<>();
+        for(Conversation c: list){
+            ConversationResponse con = new ConversationResponse();
+            con.setCreatedAt(c.getCreatedAt());
+            con.setUpdatedAt(c.getUpdatedAt());
+            con.setId(c.getId());
+            if(c.getUserOne().getId()!=user.getId()){
+                con.setUser(c.getUserOne());
+            }else {
+                con.setUser(c.getUserTwo());
+            }
+            conversationResponses.add(con);
+        }
+        user.setConversations(conversationResponses);
+        return user;
     }
 
     @CrossOrigin
