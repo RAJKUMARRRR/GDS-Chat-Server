@@ -79,10 +79,11 @@ public class UserController {
         userRepository.save(user);
         if(user.getRole() != Role.ADMIN){
             Conversation conversation = new Conversation();
-            conversation.setUserOne(userRepository.findByRole(Role.ADMIN).getId());
+            User admin = userRepository.findByRole(Role.ADMIN);
+            conversation.setUserOne(admin.getId());
             conversation.setUserTwo(user.getId());
             conversationRepository.save(conversation);
-            messageRepository.saveAll(ModelUtils.getGreetingMessages(conversation,user));
+            messageRepository.saveAll(ModelUtils.getGreetingMessages(conversation,user,admin));
         }
         return user;
     }
@@ -95,10 +96,8 @@ public class UserController {
         return user;
     }
 
-
     @DeleteMapping("/users/{id}")
-    @CrossOrigin
-    public  void deleteUser(@PathVariable("id") Long id){
+    public void deleteUser(@PathVariable("id") Long id){
         userRepository.delete(getUserById(id));
     }
 
@@ -121,6 +120,9 @@ public class UserController {
 
 
     private void checkAccess(long id){
+        if(userDetailsService.getLoggedInUser().getRole() == Role.ADMIN){
+            return;
+        }
         if(id != userDetailsService.getLoggedInUser().getId()){
             throw  new AccessDeniedException("You are not authorized do this operation");
         }

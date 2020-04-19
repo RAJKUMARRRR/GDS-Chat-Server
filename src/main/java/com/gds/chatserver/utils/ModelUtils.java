@@ -29,17 +29,17 @@ public class ModelUtils {
     @Autowired
     private static MessageRepository messageRepository;
 
-    public static List<Message> getGreetingMessages(Conversation conversation, User user){
+    public static List<Message> getGreetingMessages(Conversation conversation, User user,User admin){
         Message messageOne = new Message();
         messageOne.setConversation(conversation.getId());
-        messageOne.setUser(userRepository.findByRole(Role.ADMIN).getId());
+        messageOne.setUser(admin.getId());
         messageOne.setMessage("Hi "+user.getUsername());
         messageOne.setMessageSource(MessageSource.USER);
         messageOne.setMessageType(MessageType.TEXT);
         messageOne.setMessageStatus(MessageStatus.SEND);
         Message messageTwo = new Message();
         messageTwo.setConversation(conversation.getId());
-        messageTwo.setUser(userRepository.findByRole(Role.ADMIN).getId());
+        messageTwo.setUser(admin.getId());
         messageTwo.setMessage("Welcome to Gateway Global Services !!");
         messageTwo.setMessageSource(MessageSource.USER);
         messageTwo.setMessageType(MessageType.TEXT);
