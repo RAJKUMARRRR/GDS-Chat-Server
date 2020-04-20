@@ -23,7 +23,7 @@ public class AuthController {
     private UserRepository userRepository;
 
     public static final String ACCOUNT_SID = "AC65df86c1d8fbdcbe9bd40eaa2c1256db";
-    public static final String AUTH_TOKEN = "d49c476b2ffd1ce425ed6c8689f21f0d";
+    public static final String AUTH_TOKEN = "ed34f905bc29d236cf486c1fe64dc67d";
     private static final String DEV_APP_HASH = "TfMBu9iPSbu";
     private static final String RELEASE_APP_HASH = "tcDU+bWGDiV";
 
