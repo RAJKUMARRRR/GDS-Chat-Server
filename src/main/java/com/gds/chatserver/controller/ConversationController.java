@@ -55,6 +55,8 @@ public class ConversationController {
     @DeleteMapping("/conversations/{id}")
     public void deletedConversation(@PathVariable("id") Long id){
         Conversation conversation = getConversationById(id);
+        List<Message> messages = messageRepository.findMessagesByConversation(conversation);
+        messageRepository.deleteInBatch(messages);
         conversationRepository.delete(conversation);
     }
 
