@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import javax.validation.constraints.*;
 import java.util.List;
 
 @Entity
@@ -17,22 +17,31 @@ import java.util.List;
 public class User extends Auditable{
     @Getter
     @Setter
+    @NotNull(message = "phone cannot be null")
+    @NotBlank(message = "phone cannot be blank")
+    @Size(min = 10,max = 10,message = "phone number must be 10 digits")
     private String phone;
 
     @Getter
     @Setter
+    @NotNull(message = "username cannot be null")
+    @NotBlank(message = "username cannot be blank")
+    @Size(min = 1,max = 30,message = "username cannot be more than 30 characters")
     private String username;
 
     @Getter
     @Setter
+    @Email(message = "email format is not correct")
     private String email;
 
     @Getter
     @Setter
+    @NotNull(message = "accountStatus cannot be null, possible values(ACTIVE,BLOCKED,DELETED)")
     private AccountStatus accountStatus;
 
     @Getter
     @Setter
+    @NotNull(message = "role cannot be null, possible values(ADMIN,CUSTOMER)")
     private Role role;
 
     @Getter
@@ -41,7 +50,9 @@ public class User extends Auditable{
 
     @Getter
     @Setter
-    private Long mailBoxNumber;
+    @NotNull(message = "mailBoxNumber cannot be null")
+    @NotBlank(message = "mailBoxNumber cannot be blank")
+    private String mailBoxNumber;
 
     @Transient
     @JsonInclude

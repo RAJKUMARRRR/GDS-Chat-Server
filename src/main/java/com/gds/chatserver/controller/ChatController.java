@@ -4,6 +4,7 @@ import com.gds.chatserver.exceptions.MessageNotFoundException;
 import com.gds.chatserver.model.*;
 import com.gds.chatserver.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -21,13 +22,20 @@ public class ChatController {
 
     @PutMapping("/messages")
     @CrossOrigin
-    public Message updateMessageById(@RequestBody Message message){
+    public Message updateMessageById(@Validated @RequestBody Message message){
         return messageRepository.save(message);
     }
 
     @CrossOrigin
     @PostMapping(value = "/messages", consumes = APPLICATION_JSON_VALUE)
-    public Message sendMessage(@RequestBody Message message){
+    public Message sendMessage(@Validated @RequestBody Message message){
         return messageRepository.save(message);
+    }
+
+
+    @DeleteMapping("/messages/{id}")
+    @CrossOrigin
+    public void deleteMessage(@PathVariable("id") Long id){
+        messageRepository.delete(getMessageById(id));
     }
 }

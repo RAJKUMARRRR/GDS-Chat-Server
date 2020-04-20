@@ -13,6 +13,8 @@ public class ValidationError {
     private Object rejectedValue;
     private String message;
 
+    ValidationError(){}
+
     ValidationError(String object, String message) {
         this.object = object;
         this.message = message;

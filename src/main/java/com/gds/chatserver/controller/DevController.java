@@ -25,7 +25,7 @@ public class DevController {
         User user = new User();
         user.setAccountStatus(AccountStatus.ACTIVE);
         user.setEmail("crajkumar72@gmail.com");
-        user.setMailBoxNumber(1234l);
+        user.setMailBoxNumber("1234l");
         user.setPhone("8501096987");
         user.setProfileImageUrl("");
         user.setRole(Role.ADMIN);

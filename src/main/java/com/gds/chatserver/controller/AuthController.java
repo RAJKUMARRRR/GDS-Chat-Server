@@ -24,6 +24,9 @@ public class AuthController {
 
     public static final String ACCOUNT_SID = "AC65df86c1d8fbdcbe9bd40eaa2c1256db";
     public static final String AUTH_TOKEN = "d49c476b2ffd1ce425ed6c8689f21f0d";
+    private static final String DEV_APP_HASH = "TfMBu9iPSbu";
+    private static final String RELEASE_APP_HASH = "tcDU+bWGDiV";
+
     static {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
     }
@@ -38,7 +41,7 @@ public class AuthController {
                 .creator(new PhoneNumber("+91"+mobileNumber), // to
                         new PhoneNumber("+15868001076"), // from
                         "Your OTP is "+otpService.generateOTP(mobileNumber)+"                " +
-                                "                                  TfMBu9iPSbu")
+                                "                                  "+RELEASE_APP_HASH)
                 .create();
         ResponseEntity<Object> responseEntity = new ResponseEntity<>("OTP sent successfully.", HttpStatus.OK);
         return responseEntity;

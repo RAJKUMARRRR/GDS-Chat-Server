@@ -1,5 +1,6 @@
 package com.gds.chatserver.controller;
 
+import com.gds.chatserver.enums.Role;
 import com.gds.chatserver.exceptions.ConversationNotFoundException;
 import com.gds.chatserver.exceptions.UserDoesNotExistException;
 import com.gds.chatserver.model.Conversation;
@@ -12,6 +13,7 @@ import com.gds.chatserver.service.UserDetailsServiceImpl;
 import org.hibernate.QueryParameterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +30,15 @@ public class ConversationController {
     private MessageRepository messageRepository;
 
     @CrossOrigin
+    @GetMapping("/conversations")
+    public List<Conversation> getAllConversations(){
+        if(userDetailsService.getLoggedInUser().getRole()!= Role.ADMIN){
+            throw new AccessDeniedException("Your are not allowed for this operation");
+        }
+        return conversationRepository.findAll();
+    }
+
+    @CrossOrigin
     @GetMapping("/conversations/{id}")
     public Conversation getConversationById(@PathVariable("id") Long id){
         return conversationRepository.findById(id).orElseThrow(()->new ConversationNotFoundException("Conversation doesn't exist with id:"+id));
@@ -36,7 +47,7 @@ public class ConversationController {
 
     @CrossOrigin
     @PostMapping("/conversations")
-    public Conversation createConversation(@RequestBody Conversation conversation){
+    public Conversation createConversation(@Validated @RequestBody Conversation conversation){
         return conversationRepository.save(conversation);
     }
 

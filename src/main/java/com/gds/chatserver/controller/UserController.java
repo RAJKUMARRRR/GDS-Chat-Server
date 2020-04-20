@@ -14,6 +14,8 @@ import org.hibernate.QueryParameterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ public class UserController {
     private MessageRepository messageRepository;
 
     @CrossOrigin
-    @GetMapping("/users/")
+    @GetMapping("/users")
     public List<User> getUsers(){
         return userRepository.findAll();
     }
@@ -71,8 +73,8 @@ public class UserController {
     }
 
     @CrossOrigin
-    @PostMapping("/users/")
-    public User createUser(@RequestBody User user){
+    @PostMapping("/users")
+    public User createUser(@Validated @RequestBody User user){
         if(user.getRole() == Role.ADMIN && userDetailsService.getLoggedInUser().getRole() != Role.ADMIN){
             throw new AccessDeniedException("You are not allowed to set role ADMIN");
         }
@@ -89,8 +91,11 @@ public class UserController {
     }
 
     @CrossOrigin
-    @PutMapping("/users/")
-    public User updateUser(@RequestBody User user){
+    @PutMapping("/users")
+    public User updateUser(@Validated @RequestBody User user) throws UserDoesNotExistException {
+        if(user.getId()==null){
+            throw new UserDoesNotExistException("User does not exist with id null");
+        }
         checkAccess(user.getId());
         userRepository.save(user);
         return user;

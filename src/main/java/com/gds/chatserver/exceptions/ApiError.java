@@ -11,7 +11,6 @@ public class ApiError {
     private HttpStatus httpStatus;
     private LocalDateTime timestamp;
     private String message;
-    private String debugMessage;
     private List<ValidationError> validationErrors;
 
     public ApiError(){
@@ -26,12 +25,10 @@ public class ApiError {
     public  ApiError(HttpStatus httpStatus,Throwable ex){
         this(httpStatus);
         this.message = "Unexpected Error";
-        this.debugMessage = ex.getLocalizedMessage();
     }
 
     public ApiError(HttpStatus httpStatus,String message,Throwable ex){
         this(httpStatus);
         this.message = message;
-        this.debugMessage = ex.getLocalizedMessage();
     }
 }

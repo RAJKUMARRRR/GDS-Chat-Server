@@ -4,8 +4,10 @@ import com.gds.chatserver.exceptions.SystemMessageNotFoundException;
 import com.gds.chatserver.model.SystemMessage;
 import com.gds.chatserver.repository.SystemMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,13 +33,13 @@ public class SystemMessageController {
 
     @PostMapping("/system_message")
     @CrossOrigin
-    public SystemMessage createSystemMessage(@RequestBody SystemMessage systemMessage){
+    public SystemMessage createSystemMessage(@Validated @RequestBody SystemMessage systemMessage){
         return systemMessageRepository.save(systemMessage);
     }
 
     @PutMapping("/system_message")
     @CrossOrigin
-    public SystemMessage updateSystemMessage(@RequestBody SystemMessage systemMessage){
+    public SystemMessage updateSystemMessage(@Validated @RequestBody SystemMessage systemMessage){
         return systemMessageRepository.save(systemMessage);
     }
 

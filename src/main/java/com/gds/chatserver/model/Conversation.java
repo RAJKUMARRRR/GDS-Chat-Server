@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "conversation")
@@ -19,6 +20,7 @@ public class Conversation  extends Auditable{
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @JsonSetter("userOneId")
+    @NotNull(message = "userOneId cannot be null")
     private User userOne;
 
     @JsonSetter("userOneId")
@@ -34,6 +36,7 @@ public class Conversation  extends Auditable{
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @JsonSetter("userTwoId")
+    @NotNull(message = "userTwoId cannot be null")
     private User userTwo;
 
     @JsonSetter("userTwoId")

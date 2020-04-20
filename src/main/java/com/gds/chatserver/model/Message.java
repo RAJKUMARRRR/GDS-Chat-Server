@@ -15,17 +15,17 @@ import javax.validation.constraints.NotNull;
 public class Message extends Auditable{
     @Getter
     @Setter
-    @NotNull
+    @NotNull(message = "message cannot be null")
     private String message;
 
     @Getter
     @Setter
-    @NotNull
+    @NotNull(message = "messageStatus cannot be null, possible values(SEND,RECEIVED,READ,FAILED,DELETED,PENDING)")
     private MessageStatus messageStatus;
 
     @Getter
     @Setter
-    @NotNull
+    @NotNull(message = "messageType cannot be null, possible values(TEXT,MEDIA)")
     private MessageType messageType;
 
     @Getter
@@ -39,7 +39,7 @@ public class Message extends Auditable{
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @JsonSetter("userId")
-    @NotNull
+    @NotNull(message = "userId cannot be null")
     private User user;
 
     @JsonSetter("userId")
@@ -54,7 +54,7 @@ public class Message extends Auditable{
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @JsonProperty("conversationId")
-    @NotNull
+    @NotNull(message = "conversationId cannot be null")
     private Conversation conversation;
 
     @JsonProperty("conversationId")
@@ -64,6 +64,7 @@ public class Message extends Auditable{
 
     @Getter
     @Setter
+    @NotNull(message = "messageSource cannot be null, possiblr values(SYSTEM,USER)")
     private MessageSource messageSource;
 
     @Getter
@@ -72,13 +73,4 @@ public class Message extends Auditable{
     private SystemMessage systemMessage;
 
     public Message(){}
-
-    public Message(String message, MessageStatus messageStatus, MessageType messageType,Media media,User user,Conversation conversation) {
-        this.message = message;
-        this.messageStatus = messageStatus;
-        this.messageType = messageType;
-        this.media = media;
-        this.user = user;
-        this.conversation = conversation;
-    }
 }
