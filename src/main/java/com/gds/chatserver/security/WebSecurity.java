@@ -38,7 +38,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(SIGN_UP_URL).permitAll()
                 .antMatchers(SEND_OTP_URL).permitAll()
                 .antMatchers(VALIDATE_OTP_URL).permitAll()
-                .anyRequest().authenticated()
+                //.anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(customAuthenticationEntryPoint)

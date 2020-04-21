@@ -55,7 +55,7 @@ public class ConversationController {
     @DeleteMapping("/conversations/{id}")
     public void deletedConversation(@PathVariable("id") Long id){
         Conversation conversation = getConversationById(id);
-        List<Message> messages = messageRepository.findMessagesByConversation(conversation);
+        List<Message> messages = messageRepository.findMessagesByConversationOrderByCreatedAt(conversation);
         messageRepository.deleteInBatch(messages);
         conversationRepository.delete(conversation);
     }
@@ -71,6 +71,6 @@ public class ConversationController {
         if(loggedInUser.getId() != conversation.getUserOne().getId() && loggedInUser.getId() != conversation.getUserTwo().getId()){
             throw new AccessDeniedException("You are not authorized to view this conversation");
         }
-        return messageRepository.findMessagesByConversation(conversationRepository.findById(conversationId).orElseThrow(()->new ConversationNotFoundException("Conversation does not exit with id:"+conversationId)));
+        return messageRepository.findMessagesByConversationOrderByCreatedAt(conversationRepository.findById(conversationId).orElseThrow(()->new ConversationNotFoundException("Conversation does not exit with id:"+conversationId)));
     }
 }

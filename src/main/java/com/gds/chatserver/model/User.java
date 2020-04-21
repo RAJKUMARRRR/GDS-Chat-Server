@@ -54,6 +54,10 @@ public class User extends Auditable{
     @NotBlank(message = "mailBoxNumber cannot be blank")
     private String mailBoxNumber;
 
+    @Getter
+    @Setter
+    private String pushToken;
+
     @Transient
     @JsonInclude
     private List<ConversationResponse> conversations;
