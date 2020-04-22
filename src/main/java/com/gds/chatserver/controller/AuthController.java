@@ -41,7 +41,7 @@ public class AuthController {
                 .creator(new PhoneNumber("+91"+mobileNumber), // to
                         new PhoneNumber("+15868001076"), // from
                         "Your OTP is "+otpService.generateOTP(mobileNumber)+"                " +
-                                "                                  "+RELEASE_APP_HASH)
+                                "                                  "+DEV_APP_HASH)
                 .create();
         ResponseEntity<Object> responseEntity = new ResponseEntity<>("OTP sent successfully.", HttpStatus.OK);
         return responseEntity;

@@ -2,6 +2,7 @@ package com.gds.chatserver.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gds.chatserver.cache.ConversationResponseCache;
 import com.gds.chatserver.enums.MessageType;
 import com.gds.chatserver.exceptions.ConversationNotFoundException;
 import com.gds.chatserver.exceptions.MessageNotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.Callable;
 
@@ -50,9 +52,14 @@ public class ChatController {
     @CrossOrigin
     @PostMapping(value = "/messages", consumes = APPLICATION_JSON_VALUE)
     public Message sendMessage(@Validated @RequestBody Message message) throws Exception {
-        //()->{
         message = messageRepository.save(message);
         sendPushMessage(message);
+        if(ConversationResponseCache.isExist(message.getConversation().getId())){
+            ConversationResponse conversationResponse = ConversationResponseCache.getItem(message.getConversation().getId());
+            conversationResponse.setLastUpdatedUserId(message.getUser().getId());
+            conversationResponse.setUpdatedAt(new Date());
+            ConversationResponseCache.setItem(conversationResponse.getId(),conversationResponse);
+        }
         return message;
     }
 
@@ -63,7 +70,7 @@ public class ChatController {
                 conversation.getUserTwo() : conversation.getUserOne();
         User fromUser = conversation.getUserOne().getId() == message.getUser().getId() ?
                 conversation.getUserOne() : conversation.getUserTwo();
-        if(toUser.getPushToken() == null || toUser.getPushToken() == ""){
+        if(toUser.getPushToken() == null || toUser.getPushToken().isEmpty()){
             return;
         }
         PushNotificationRequest pushNotificationRequest = new PushNotificationRequest();

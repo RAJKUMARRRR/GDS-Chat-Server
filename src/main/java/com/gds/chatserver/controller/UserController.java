@@ -1,5 +1,6 @@
 package com.gds.chatserver.controller;
 
+import com.gds.chatserver.cache.ConversationResponseCache;
 import com.gds.chatserver.enums.Role;
 import com.gds.chatserver.exceptions.UserDoesNotExistException;
 import com.gds.chatserver.model.Conversation;
@@ -18,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +39,10 @@ public class UserController {
     @Autowired
     private MessageRepository messageRepository;
 
+    @Autowired
+    private ConversationController conversationController;
+
+
     @CrossOrigin
     @GetMapping("/users")
     public List<User> getUsers(){
@@ -52,24 +58,23 @@ public class UserController {
 
     @GetMapping("/users/profile")
     @CrossOrigin
-    public User getLoogedInUser(){
+    public User getLoogedInUser() throws CloneNotSupportedException {
         User user = userDetailsService.getLoggedInUser();
-        List<Conversation> list =  conversationRepository.getAllByUserOneOrUserTwo(user,user);
+        /*List<Conversation> list =  conversationRepository.getAllByUserOneOrUserTwo(user,user);
         List<ConversationResponse> conversationResponses = new ArrayList<>();
         for(Conversation c: list){
             ConversationResponse con = new ConversationResponse();
             con.setCreatedAt(c.getCreatedAt());
             con.setUpdatedAt(c.getUpdatedAt());
             con.setId(c.getId());
-            if(c.getUserOne().getId()!=user.getId()){
-                con.setUser(c.getUserOne());
-            }else {
-                con.setUser(c.getUserTwo());
-            }
+            con.setUserOne(c.getUserOne());
+            con.setUserTwo(c.getUserTwo());
             conversationResponses.add(con);
         }
-        user.setConversations(conversationResponses);
-        return user;
+        user.setConversations(conversationResponses);*/
+        User clonedUser = new User(user);
+        clonedUser.setConversations(ConversationResponseCache.getList(user,conversationRepository));
+        return clonedUser;
     }
 
     @CrossOrigin
@@ -84,7 +89,8 @@ public class UserController {
             User admin = userRepository.findByRole(Role.ADMIN);
             conversation.setUserOne(admin.getId());
             conversation.setUserTwo(user.getId());
-            conversationRepository.save(conversation);
+            //conversationRepository.save(conversation);
+            conversationController.createConversation(conversation);
             messageRepository.saveAll(ModelUtils.getGreetingMessages(conversation,user,admin));
         }
         return user;

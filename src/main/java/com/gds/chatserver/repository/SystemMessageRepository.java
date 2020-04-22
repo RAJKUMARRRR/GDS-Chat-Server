@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface SystemMessageRepository extends JpaRepository<SystemMessage,Long> {
     public List<SystemMessage> findByParent(SystemMessage parent);
+    public List<SystemMessage> findAllByParentIsNull();
 }

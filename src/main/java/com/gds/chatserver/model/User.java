@@ -78,4 +78,19 @@ public class User extends Auditable{
     public  User(Long id){
         this.id = id;
     }
+
+    public  User(User user){
+        this.id = user.getId();
+        this.setCreatedAt(user.getCreatedAt());
+        this.setUpdatedAt(user.getUpdatedAt());
+        this.phone = user.getPhone();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+        this.accountStatus = user.getAccountStatus();
+        this.role = user.getRole();
+        this.profileImageUrl = user.getProfileImageUrl();
+        this.mailBoxNumber = user.getMailBoxNumber();
+        this.pushToken = user.getPushToken();
+        this.conversations = user.getConversations();
+    }
 }

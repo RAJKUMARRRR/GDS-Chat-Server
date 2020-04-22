@@ -1,9 +1,11 @@
 package com.gds.chatserver.controller;
 
+import com.gds.chatserver.cache.ConversationResponseCache;
 import com.gds.chatserver.enums.Role;
 import com.gds.chatserver.exceptions.ConversationNotFoundException;
 import com.gds.chatserver.exceptions.UserDoesNotExistException;
 import com.gds.chatserver.model.Conversation;
+import com.gds.chatserver.model.ConversationResponse;
 import com.gds.chatserver.model.Message;
 import com.gds.chatserver.model.User;
 import com.gds.chatserver.repository.ConversationRepository;
@@ -48,7 +50,9 @@ public class ConversationController {
     @CrossOrigin
     @PostMapping("/conversations")
     public Conversation createConversation(@Validated @RequestBody Conversation conversation){
-        return conversationRepository.save(conversation);
+        conversation = conversationRepository.save(conversation);
+        ConversationResponseCache.setItem(conversation.getId(),new ConversationResponse(conversation));
+        return conversation;
     }
 
     @CrossOrigin
@@ -58,6 +62,8 @@ public class ConversationController {
         List<Message> messages = messageRepository.findMessagesByConversationOrderByCreatedAt(conversation);
         messageRepository.deleteInBatch(messages);
         conversationRepository.delete(conversation);
+        ConversationResponseCache.setItem(conversation.getId(),new ConversationResponse(conversation));
+        ConversationResponseCache.removeItem(id);
     }
 
     @CrossOrigin
@@ -72,5 +78,16 @@ public class ConversationController {
             throw new AccessDeniedException("You are not authorized to view this conversation");
         }
         return messageRepository.findMessagesByConversationOrderByCreatedAt(conversationRepository.findById(conversationId).orElseThrow(()->new ConversationNotFoundException("Conversation does not exit with id:"+conversationId)));
+    }
+
+    @GetMapping("/conversations/mark_read/{id}")
+    @CrossOrigin
+    public void readConversation(@PathVariable("id") Long id){
+        if(ConversationResponseCache.isExist(id)){
+            ConversationResponse conversationResponse = ConversationResponseCache.getItem(id);
+            if(conversationResponse.getLastUpdatedUserId() != userDetailsService.getLoggedInUser().getId()){
+                conversationResponse.setLastUpdatedUserId(null);
+            }
+        }
     }
 }
