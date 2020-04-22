@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,6 +75,9 @@ public class UserController {
         user.setConversations(conversationResponses);*/
         User clonedUser = new User(user);
         clonedUser.setConversations(ConversationResponseCache.getList(user,conversationRepository));
+        Collections.sort(clonedUser.getConversations(),(a,b)->{
+            return b.getUpdatedAt().compareTo(a.getUpdatedAt());
+        });
         return clonedUser;
     }
 
