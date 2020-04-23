@@ -118,19 +118,9 @@ public class UserController {
 
     @CrossOrigin
     @GetMapping("/users/conversations")
-    public List<Conversation> getConversationsByUser(@RequestParam(name = "userId",required = true) Long userId) throws UserDoesNotExistException {
-        if(userId==null){
-            throw new QueryParameterException("Missing query parameter 'userId'");
-        }
-        User loggedInUser = userDetailsService.getLoggedInUser();
-        if(loggedInUser.getId() != userId){
-            throw new AccessDeniedException("You are not authorized to view conversations of userId:"+userId);
-        }
-        Optional<User> user = userRepository.findById(userId);
-        if(user.isPresent())
-            return conversationRepository.getAllByUserOneOrUserTwo(user.get(),user.get());
-        else
-            throw new UserDoesNotExistException("User doesn't exist with id:"+userId);
+    public List<ConversationResponse> getConversationsByUser() throws UserDoesNotExistException {
+        User user = userDetailsService.getLoggedInUser();
+        return ConversationResponseCache.getList(user,conversationRepository);
     }
 
 

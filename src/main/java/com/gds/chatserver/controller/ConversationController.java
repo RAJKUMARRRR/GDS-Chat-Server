@@ -87,6 +87,7 @@ public class ConversationController {
             ConversationResponse conversationResponse = ConversationResponseCache.getItem(id);
             if(conversationResponse.getLastUpdatedUserId() != userDetailsService.getLoggedInUser().getId()){
                 conversationResponse.setLastUpdatedUserId(null);
+                conversationResponse.setUnreadCount(0);
             }
         }
     }

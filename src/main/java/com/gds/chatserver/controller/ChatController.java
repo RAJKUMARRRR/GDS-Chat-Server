@@ -56,6 +56,11 @@ public class ChatController {
         sendPushMessage(message);
         if(ConversationResponseCache.isExist(message.getConversation().getId())){
             ConversationResponse conversationResponse = ConversationResponseCache.getItem(message.getConversation().getId());
+            if(conversationResponse.getLastUpdatedUserId() == message.getUser().getId()){
+                conversationResponse.setUnreadCount(conversationResponse.getUnreadCount()+1);
+            }else{
+                conversationResponse.setUnreadCount(1);
+            }
             conversationResponse.setLastUpdatedUserId(message.getUser().getId());
             conversationResponse.setUpdatedAt(new Date());
             ConversationResponseCache.setItem(conversationResponse.getId(),conversationResponse);
