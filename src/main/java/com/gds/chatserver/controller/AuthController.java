@@ -7,6 +7,7 @@ import com.gds.chatserver.repository.UserRepository;
 import com.gds.chatserver.service.OtpService;
 import com.twilio.Twilio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,14 +23,20 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
-    public static final String ACCOUNT_SID = "AC65df86c1d8fbdcbe9bd40eaa2c1256db";
-    public static final String AUTH_TOKEN = "e935953aa49c30097fd3d872bed91b5a";
     private static final String DEV_APP_HASH = "TfMBu9iPSbu";
     private static final String RELEASE_APP_HASH = "tcDU+bWGDiV";
+    @Autowired
+    private Environment environment;
+    private final String HASH_KEY="tcDU+bWGDiV";
 
-    static {
+    /*static {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+    }*/
+
+    AuthController(){
+        Twilio.init(environment.getProperty("TWILLIO_ACCOUND_SID"),environment.getProperty("TWILLIO_AUTH_TOKEN"));
     }
+
     @GetMapping("/auth/sendOTP")
     @CrossOrigin
     public ResponseEntity<Object> sendOtp(@RequestParam(name = "mobile") String mobileNumber) throws UserDoesNotExistException {
@@ -41,7 +48,7 @@ public class AuthController {
                 .creator(new PhoneNumber("+91"+mobileNumber), // to
                         new PhoneNumber("+15868001076"), // from
                         "Your OTP is "+otpService.generateOTP(mobileNumber)+"                " +
-                                "                                  "+RELEASE_APP_HASH)
+                                "                                  "+environment.getProperty("OTP_APP_HASH_KEY"))
                 .create();
         ResponseEntity<Object> responseEntity = new ResponseEntity<>("OTP sent successfully.", HttpStatus.OK);
         return responseEntity;
