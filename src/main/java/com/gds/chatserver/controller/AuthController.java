@@ -25,16 +25,18 @@ public class AuthController {
 
     private static final String DEV_APP_HASH = "TfMBu9iPSbu";
     private static final String RELEASE_APP_HASH = "tcDU+bWGDiV";
-    @Autowired
-    private Environment environment;
-    private final String HASH_KEY="tcDU+bWGDiV";
+    private String HASH_KEY="tcDU+bWGDiV";
 
     /*static {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
     }*/
 
-    AuthController(){
-        Twilio.init(environment.getProperty("TWILLIO_ACCOUND_SID"),environment.getProperty("TWILLIO_AUTH_TOKEN"));
+    @Autowired
+    AuthController(Environment environment){
+        String ACCOUNT_SID = environment.getProperty("TWILLIO_ACCOUNT_SID");//environment.getProperty("TWILLIO_ACCOUND_SID");
+        String AUTH_TOKEN = environment.getProperty("TWILLIO_AUTH_TOKEN");
+        HASH_KEY = environment.getProperty("OTP_APP_HASH_KEY");
+        Twilio.init(ACCOUNT_SID,AUTH_TOKEN);
     }
 
     @GetMapping("/auth/sendOTP")
@@ -48,7 +50,7 @@ public class AuthController {
                 .creator(new PhoneNumber("+91"+mobileNumber), // to
                         new PhoneNumber("+15868001076"), // from
                         "Your OTP is "+otpService.generateOTP(mobileNumber)+"                " +
-                                "                                  "+environment.getProperty("OTP_APP_HASH_KEY"))
+                                "                                  "+HASH_KEY)
                 .create();
         ResponseEntity<Object> responseEntity = new ResponseEntity<>("OTP sent successfully.", HttpStatus.OK);
         return responseEntity;
