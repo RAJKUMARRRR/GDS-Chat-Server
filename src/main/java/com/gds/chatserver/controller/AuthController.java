@@ -48,7 +48,7 @@ public class AuthController {
         }
         Message message = Message
                 .creator(new PhoneNumber("+91"+mobileNumber), // to
-                        new PhoneNumber("+15868001076"), // from
+                        new PhoneNumber("+12564881848"), // from
                         "Your OTP is "+otpService.generateOTP(mobileNumber)+"                " +
                                 "                                  "+HASH_KEY)
                 .create();
