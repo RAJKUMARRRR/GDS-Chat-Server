@@ -1,5 +1,6 @@
 package com.gds.chatserver.exceptions;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.twilio.exception.ApiException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -60,6 +61,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ApiException.class})
     protected ResponseEntity<Object> handleApiException(ApiException ex) {
         ApiError error = new ApiError(HttpStatus.BAD_REQUEST,ex.getMessage(),ex);
+        return buildResponseEntity(error);
+    }
+
+    @ExceptionHandler({TokenExpiredException.class})
+    protected ResponseEntity<Object> handleTokenExpiredException(TokenExpiredException ex){
+        ApiError error = new ApiError(HttpStatus.UNAUTHORIZED,ex.getMessage(),ex);
         return buildResponseEntity(error);
     }
 
