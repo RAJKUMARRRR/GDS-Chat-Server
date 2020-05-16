@@ -9,7 +9,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.springframework.core.env.Environment;
 
-@Component
 public class ProxySetup {
         @Autowired
         private Environment environment;
