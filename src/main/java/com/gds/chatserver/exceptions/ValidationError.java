@@ -15,7 +15,7 @@ public class ValidationError {
 
     ValidationError(){}
 
-    ValidationError(String object, String message) {
+    public ValidationError(String object, String message) {
         this.object = object;
         this.message = message;
     }
