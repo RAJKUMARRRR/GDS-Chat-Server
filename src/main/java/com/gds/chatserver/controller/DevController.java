@@ -2,7 +2,9 @@ package com.gds.chatserver.controller;
 
 import com.gds.chatserver.enums.AccountStatus;
 import com.gds.chatserver.enums.Role;
+import com.gds.chatserver.model.AppInfo;
 import com.gds.chatserver.model.User;
+import com.gds.chatserver.repository.AppInfoRepository;
 import com.gds.chatserver.repository.ConversationRepository;
 import com.gds.chatserver.repository.MessageRepository;
 import com.gds.chatserver.repository.UserRepository;

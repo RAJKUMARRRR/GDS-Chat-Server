@@ -40,6 +40,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(VALIDATE_OTP_URL).permitAll()
                 .antMatchers("/referenceData/countryCodes").permitAll()
                 .antMatchers("/referenceData/countryCodes/import").permitAll()
+                .antMatchers("/checkAppUpdate").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
