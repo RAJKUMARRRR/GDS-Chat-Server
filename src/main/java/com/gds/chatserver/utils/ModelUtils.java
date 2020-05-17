@@ -89,7 +89,7 @@ public class ModelUtils {
         Message messageTwo = new Message();
         messageTwo.setConversation(conversation.getId());
         messageTwo.setUser(admin.getId());
-        messageTwo.setMessage("Welcome to Gateway Global Services !!");
+        messageTwo.setMessage("Welcome to GatewayDigitalServices !!");
         messageTwo.setMessageSource(MessageSource.USER);
         messageTwo.setMessageType(MessageType.TEXT);
         messageTwo.setMessageStatus(MessageStatus.SEND);
