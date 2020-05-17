@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.core.env.Environment;
 
 @RestController
 @RequestMapping("/")
@@ -42,6 +43,9 @@ public class UserController {
 
     @Autowired
     private ConversationController conversationController;
+
+    @Autowired
+    private Environment environment;
 
 
     @CrossOrigin
@@ -95,7 +99,7 @@ public class UserController {
             conversation.setUserTwo(user.getId());
             //conversationRepository.save(conversation);
             conversationController.createConversation(conversation);
-            messageRepository.saveAll(ModelUtils.getGreetingMessages(conversation,user,admin));
+            messageRepository.saveAll(ModelUtils.getGreetingMessages(conversation,user,admin,environment.getProperty("WELCOME_MESSAGE")));
         }
         return user;
     }

@@ -1,11 +1,13 @@
 package com.gds.chatserver.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gds.chatserver.controller.UserController;
 import com.gds.chatserver.enums.AccountStatus;
 import com.gds.chatserver.enums.Role;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -61,6 +63,7 @@ public class User extends Auditable{
     @Transient
     @JsonInclude
     private List<ConversationResponse> conversations;
+
 
     public static User fromId(Long userId) {
         User user = new User();

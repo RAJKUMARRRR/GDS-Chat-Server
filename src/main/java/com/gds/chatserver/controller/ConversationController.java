@@ -30,6 +30,8 @@ public class ConversationController {
     private UserDetailsServiceImpl userDetailsService;
     @Autowired
     private MessageRepository messageRepository;
+    @Autowired
+    private UserController userController;
 
     @CrossOrigin
     @GetMapping("/conversations")
@@ -51,6 +53,8 @@ public class ConversationController {
     @PostMapping("/conversations")
     public Conversation createConversation(@Validated @RequestBody Conversation conversation){
         conversation = conversationRepository.save(conversation);
+        conversation.setUserOneObject(userController.getUserById(conversation.getUserOne().getId()));
+        conversation.setUserTwoObject(userController.getUserById(conversation.getUserTwo().getId()));
         ConversationResponseCache.setItem(conversation.getId(),new ConversationResponse(conversation));
         return conversation;
     }

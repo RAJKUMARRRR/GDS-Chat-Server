@@ -1,12 +1,11 @@
 package com.gds.chatserver.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
+import com.gds.chatserver.controller.UserController;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -42,6 +41,13 @@ public class Conversation  extends Auditable{
     @JsonSetter("userTwoId")
     public void setUserTwo(Long userId) {
         userTwo = User.fromId(userId);
+    }
+
+    public void setUserOneObject(User user){
+        userOne = user;
+    }
+    public void setUserTwoObject(User user){
+        userTwo = user;
     }
 
     public static Conversation fromId(Long conversationId) {

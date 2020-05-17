@@ -19,66 +19,13 @@ import java.util.List;
 public class ModelUtils {
     @Autowired
     private static UserRepository userRepository;
-
     @Autowired
     private static UserDetailsServiceImpl userDetailsService;
-
     @Autowired
     private static ConversationRepository conversationRepository;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Autowired
     private static MessageRepository messageRepository;
-
-    public static List<Message> getGreetingMessages(Conversation conversation, User user,User admin){
+    public static List<Message> getGreetingMessages(Conversation conversation, User user,User admin,String welcomeMessage){
         Message messageOne = new Message();
         messageOne.setConversation(conversation.getId());
         messageOne.setUser(admin.getId());
@@ -89,7 +36,7 @@ public class ModelUtils {
         Message messageTwo = new Message();
         messageTwo.setConversation(conversation.getId());
         messageTwo.setUser(admin.getId());
-        messageTwo.setMessage("Welcome to GatewayDigitalServices !!");
+        messageTwo.setMessage(welcomeMessage==null?"Welcome to GatewayDigitalServices !!":welcomeMessage);
         messageTwo.setMessageSource(MessageSource.USER);
         messageTwo.setMessageType(MessageType.TEXT);
         messageTwo.setMessageStatus(MessageStatus.SEND);

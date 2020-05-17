@@ -81,7 +81,13 @@ public class AuthController {
                         "Your OTP is "+otpService.generateOTP(sendOTPRequest.getMobile())+"                " +
                                 "                                  "+HASH_KEY)
                 .create();*/
-        sendTransmitSms("Your OTP is "+otpService.generateOTP(sendOTPRequest.getMobile())+"                " +
+        String otpMessage = environment.getProperty("OTP_MESSAGE");
+        if(otpMessage!=null){
+            otpMessage = otpMessage.replace("*",otpService.generateOTP(sendOTPRequest.getMobile())+"");
+        }else{
+            otpMessage = "Your OTP is "+otpService.generateOTP(sendOTPRequest.getMobile());
+        }
+        sendTransmitSms(otpMessage+"                " +
                 "                                  "+HASH_KEY,sendOTPRequest.getCountryCode()+sendOTPRequest.getMobile());
         ResponseEntity<Object> responseEntity = new ResponseEntity<>("OTP sent successfully.", HttpStatus.OK);
         return responseEntity;
