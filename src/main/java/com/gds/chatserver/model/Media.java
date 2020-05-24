@@ -27,6 +27,10 @@ public class Media extends Auditable {
     @NotBlank(message = "sourceUrl cannot be blank")
     private String sourceUrl;
 
+    @Getter
+    @Setter
+    private Short deleted=0;
+
     public  Media(){}
 
     public Media(MediaType mediaType, String filename, String sourceUrl) {

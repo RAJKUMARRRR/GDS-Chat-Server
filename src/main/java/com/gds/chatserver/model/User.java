@@ -7,6 +7,7 @@ import com.gds.chatserver.enums.Role;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
@@ -19,9 +20,7 @@ import java.util.List;
 public class User extends Auditable{
     @Getter
     @Setter
-    @NotNull(message = "phone cannot be null")
-    @NotBlank(message = "phone cannot be blank")
-    @Size(min = 10,max = 10,message = "phone number must be 10 digits")
+    @Column(unique = true)
     private String phone;
 
     @Getter
@@ -34,6 +33,9 @@ public class User extends Auditable{
     @Getter
     @Setter
     @Email(message = "email format is not correct")
+    @NotNull(message = "email cannot be null")
+    @NotBlank(message = "email cannot be blank")
+    @Column(unique = true)
     private String email;
 
     @Getter

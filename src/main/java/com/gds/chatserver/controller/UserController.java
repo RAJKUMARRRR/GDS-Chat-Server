@@ -1,12 +1,13 @@
 package com.gds.chatserver.controller;
 
 import com.gds.chatserver.cache.ConversationResponseCache;
+import com.gds.chatserver.enums.MessageSource;
 import com.gds.chatserver.enums.Role;
+import com.gds.chatserver.exceptions.DuplicateRowException;
 import com.gds.chatserver.exceptions.UserDoesNotExistException;
-import com.gds.chatserver.model.Conversation;
-import com.gds.chatserver.model.ConversationResponse;
-import com.gds.chatserver.model.User;
+import com.gds.chatserver.model.*;
 import com.gds.chatserver.repository.ConversationRepository;
+import com.gds.chatserver.repository.MediaRepository;
 import com.gds.chatserver.repository.MessageRepository;
 import com.gds.chatserver.repository.UserRepository;
 import com.gds.chatserver.service.UserDetailsServiceImpl;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManagerFactory;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +48,12 @@ public class UserController {
 
     @Autowired
     private Environment environment;
+
+    @Autowired
+    private MediaRepository mediaRepository;
+
+    @Autowired
+    private MediaController mediaController;
 
 
     @CrossOrigin
@@ -91,6 +99,12 @@ public class UserController {
         if(user.getRole() == Role.ADMIN && userDetailsService.getLoggedInUser().getRole() != Role.ADMIN){
             throw new AccessDeniedException("You are not allowed to set role ADMIN");
         }
+        if(user.getPhone()!=null&&!checkUniqueKeyConstraint(user.getPhone(),"phone")){
+            throw new DuplicateRowException("phone","Mobile number already registered");
+        }
+        if(user.getEmail()!=null&&!checkUniqueKeyConstraint(user.getEmail(),"email")){
+            throw new DuplicateRowException("email","Email already registered");
+        }
         userRepository.save(user);
         if(user.getRole() != Role.ADMIN){
             Conversation conversation = new Conversation();
@@ -102,6 +116,22 @@ public class UserController {
             messageRepository.saveAll(ModelUtils.getGreetingMessages(conversation,user,admin,environment.getProperty("WELCOME_MESSAGE")));
         }
         return user;
+    }
+
+    public boolean checkUniqueKeyConstraint(String value,String column){
+        switch (column){
+            case "phone":
+                if(userRepository.findByPhone(value)!=null){
+                    return false;
+                }
+                break;
+            case "email":
+                if(userRepository.findByEmail(value)!=null){
+                    return false;
+                }
+                break;
+        }
+        return true;
     }
 
     @CrossOrigin
@@ -116,8 +146,24 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable("id") Long id){
-        userRepository.delete(getUserById(id));
+    public void deleteUser(@PathVariable("id") Long id) throws IOException {
+        User user = getUserById(id);
+        List<Conversation> conversationList = conversationRepository.getAllByUserOneOrUserTwo(user,user);
+        for(Conversation conversation:conversationList){
+            List<Message> messageList = messageRepository.findMessagesByConversationOrderByCreatedAt(conversation);
+            for(Message message:messageList){
+                if(message.getMedia()!=null){
+                    mediaController.deleteImage(message.getMedia().getFilename());
+                    mediaRepository.delete(message.getMedia());
+                }
+                if(message.getMessageSource()==null){
+                    message.setMessageSource(MessageSource.USER);
+                }
+            }
+            messageRepository.deleteAll(messageList);
+        }
+        conversationRepository.deleteAll(conversationList);
+        userRepository.delete(user);
     }
 
     @CrossOrigin

@@ -65,7 +65,7 @@ public class Message extends Auditable{
     @Getter
     @Setter
     @NotNull(message = "messageSource cannot be null, possiblr values(SYSTEM,USER)")
-    private MessageSource messageSource;
+    private MessageSource messageSource = MessageSource.USER;
 
     @Getter
     @Setter

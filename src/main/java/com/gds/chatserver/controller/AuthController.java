@@ -72,8 +72,18 @@ public class AuthController {
     @CrossOrigin
     public ResponseEntity<Object> sendOtp(@RequestBody SendOTPRequest sendOTPRequest) throws UserDoesNotExistException, IOException {
         User user = userRepository.findByPhone(sendOTPRequest.getMobile());
+        if(user==null && sendOTPRequest.getEmail() != null && !"".equals(sendOTPRequest.getEmail().trim())){
+            user = userRepository.findByEmail(sendOTPRequest.getEmail());
+            if(user!=null){
+                user.setPhone(sendOTPRequest.getMobile());
+                userRepository.save(user);
+            }
+        }
+        if(user==null && (sendOTPRequest.getEmail() == null || "".equals(sendOTPRequest.getEmail().trim()))){
+            throw new UserDoesNotExistException("Your mobile number not registered, please login with your registered email.");
+        }
         if(user==null){
-            throw new UserDoesNotExistException("You are not registered.");
+            throw new UserDoesNotExistException("Sorry, we could not find your account, please contact admin.");
         }
         /*Message message = Message
                 .creator(new PhoneNumber(sendOTPRequest.getCountryCode()+sendOTPRequest.getMobile()), // to

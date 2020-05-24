@@ -88,6 +88,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(apiError);
     }
 
+    @ExceptionHandler({DuplicateRowException.class})
+    protected ResponseEntity<Object> handleDuplicateRowException(DuplicateRowException ex){
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST,ex.getMessage(),ex);
+        return buildResponseEntity(apiError);
+    }
+
+
     private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
         return new ResponseEntity<>(apiError, apiError.getHttpStatus());
     }

@@ -34,11 +34,17 @@ public class MediaController {
 
     @CrossOrigin
     @RequestMapping(value = "/media/upload", method = POST)
-    public Map greetingJson(@RequestBody ImageData imageData) throws IOException {
+    public Map uploadImage(@RequestBody ImageData imageData) throws IOException {
         if(cloudinary==null){
             throw new RuntimeException("Not able instatiate cloudinary");
         }
         Map uploadResult =  cloudinary.uploader().upload(imageData.getBase64(),ObjectUtils.emptyMap());
         return uploadResult;
+    }
+
+    public  void deleteImage(String publicId) throws IOException {
+        if(cloudinary!=null){
+            cloudinary.uploader().destroy(publicId,ObjectUtils.emptyMap());
+        }
     }
 }
